@@ -1,0 +1,21 @@
+{
+	"image":"vs.png",
+	"width":20,
+	"height":32,
+	"count":42,
+	"offset":{
+		"x":2,
+		"y":6
+	},
+	"spread":{
+		"x":20,
+		"y":38
+	},
+	"rowsize":14,
+	"sequences":{
+		"all_cars":{
+			"start":0,
+			"length":42
+		}
+	}
+}
