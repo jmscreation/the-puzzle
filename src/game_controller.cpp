@@ -3,11 +3,6 @@
 Controller::Controller(olc::PixelGameEngine& pge): pge(pge), mousePoint(0,0) {
     generate_interval = 1;
 
-    Entity* e = new Entity(EntityTypes.test_animation);
-    e->position = {pge.ScreenWidth() / 2.0f - 64, pge.ScreenHeight() / 2.0f - 64};
-    e->origin = e->frameLocation.size / 2.0f;
-    e->scale = {0.1f, 0.1f};
-
     mousePoint.color = olc::GREEN;
 }
 
@@ -17,12 +12,29 @@ Controller::~Controller() {
 void Controller::update(float delta) {
 
     if(generate_timer.getSeconds() > generate_interval){
-        Car* c = new Car(rand() % pge.ScreenWidth(), rand() % pge.ScreenHeight());
-        c->to_direction = rand() % 360;
-        c->speed = 8 + rand() % 32;
-        c->turn_speed = float(5 + rand()%395) / 10.f;
+        Car* c = new Car(0, 0);
+        c->direction = rand() % 2 ? 45 : 135;
+        c->to_direction = 45 + rand() % 90;
+        c->to_speed = 24 + rand() % 70;
+        c->speed = 10;
+        c->inHurry = !(rand() % 3);
 
-        generate_interval = 12 + rand() % 5;
+        if(rand() % 5){
+            c->position.x = rand() % pge.ScreenWidth();
+            c->position.y = pge.ScreenHeight() + 64 + rand()%30;
+
+            c->destX = rand()%4 ? c->position.x : rand() % pge.ScreenWidth();
+            c->destY = -128;
+        } else {
+            c->position.x = -64 - rand()%30;
+            c->position.y = rand() % pge.ScreenHeight();
+
+            c->destX = pge.ScreenWidth() + 128;
+            c->destY = rand()%4 ? c->position.y : rand() % pge.ScreenHeight();
+        }
+
+        srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
+        generate_interval = float(3 + rand() % 20) / 10.f;
         generate_timer.restart();
     }
 

@@ -37,13 +37,15 @@ bool launchGame() {
 }
 
 int main(int argc, char** argv){
+    srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
     for(int i=1; i < argc; ++i){
         programArguments.push_back(argv[i]); // create argument list
     }
 
-    freedialog::MessageDialog msg("This project is currently under development. Please check back later!", "Unavailable", MB_ICONERROR);
-    
+    #ifdef NO_RELEASE
+    //freedialog::MessageDialog msg("This project is currently under development. Please check back later!", "Unavailable", MB_ICONERROR);
     return 0;
+    #endif
 
     if(!initAssetManager()){
         std::cout << "something went wrong when initializing asset manager\n";

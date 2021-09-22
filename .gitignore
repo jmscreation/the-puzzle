@@ -32,7 +32,7 @@
 
 # Other / Misc
 .vscode
-
+resources/build
 
 
 # Allow:

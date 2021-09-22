@@ -15,16 +15,18 @@ set DEBUGMODE=1
 
 set REBUILD_RESOURCES=1
 set REBUILD_LIBRARIES=0
+set REBUILD_COMPLETED=0
 set LINK_ONLY=0
 set VERBOSE=0
 
 set ASYNC_BUILD=1
 
 
+REM -DNO_RELEASE
 set COMPILER_FLAGS=-std=c++20
 set ADDITIONAL_LIBRARIES=-static-libstdc++ -lpthread -lportaudio -lsetupapi -lwinmm -lcomdlg32 -luser32 -lgdi32 -lopengl32 -lShlwapi -ldwmapi -lstdc++fs -lpng -lz -lfreetype
 set ADDITIONAL_LIBDIRS=-Llibrary
-set ADDITIONAL_INCLUDEDIRS=-Ilibrary -Ilibrary\helpers -Isrc -Iresources -Iresources\build
+set ADDITIONAL_INCLUDEDIRS=-Ilibrary -Ilibrary\helpers -Isrc -Isrc\completed -Iresources -Iresources\build
 
 set ARCHIVER_DIR=.\resources
 set ARCHIVER=%ARCHIVER_DIR%\archiver
@@ -72,7 +74,7 @@ if not exist .objs64 (
 	mkdir .objs64
 )
 
-del /S /Q "src\*.o" >nul 2>nul
+del /Q "src\*.o" >nul 2>nul
 
 if %REBUILD_RESOURCES% GTR 0 (
 	del /S /Q "%RESOURCE_BUILD_DIR%\*.o" >nul 2>nul
@@ -80,6 +82,10 @@ if %REBUILD_RESOURCES% GTR 0 (
 
 if %REBUILD_LIBRARIES% GTR 0 (
 	del /S /Q "library\helpers\*.o" >nul 2>nul
+)
+
+if %REBUILD_COMPLETED% GTR 0 (
+	del /S /Q "src\completed\*.o" >nul 2>nul
 )
 
 
@@ -102,6 +108,16 @@ for %%F in (src\*.cpp) do (
 			echo %CPP% %ADDITIONAL_INCLUDEDIRS% %COMPILER_FLAGS% %DEBUG_INFO% -c %%F -o src\%%~nF.o
 		)
 		start /B %WAIT% "%%~nF.o" %CPP% %ADDITIONAL_INCLUDEDIRS% %COMPILER_FLAGS% %DEBUG_INFO% -c %%F -o src\%%~nF.o
+	)
+)
+
+for %%F in (src\completed\*.cpp) do (
+	if not exist src\completed\%%~nF.o (
+		echo Building %%~nF.o
+		if %VERBOSE% GTR 0 (
+			echo %CPP% %ADDITIONAL_INCLUDEDIRS% %COMPILER_FLAGS% %DEBUG_INFO% -c %%F -o src\completed\%%~nF.o
+		)
+		start /B %WAIT% "%%~nF.o" %CPP% %ADDITIONAL_INCLUDEDIRS% %COMPILER_FLAGS% %DEBUG_INFO% -c %%F -o src\completed\%%~nF.o
 	)
 )
 
@@ -130,6 +146,7 @@ if %count%==0 (
 
 set "files="
 for /f "delims=" %%A in ('dir /b /a-d "src\*.o" ') do set "files=!files! src\%%A"
+for /f "delims=" %%A in ('dir /b /a-d "src\completed\*.o" ') do set "files=!files! src\completed\%%A"
 for /f "delims=" %%A in ('dir /b /a-d "%RESOURCE_BUILD_DIR%\*.o" ') do set "files=!files! %RESOURCE_BUILD_DIR%\%%A"
 for /f "delims=" %%A in ('dir /b /a-d "library\helpers\*.o" ') do set "files=!files! library\helpers\%%A"
 

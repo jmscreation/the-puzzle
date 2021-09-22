@@ -1,6 +1,6 @@
 #pragma once
 
-#define PI 3.14159
+#define PI 3.14159265358979323f
 
 #include "archiveassetmanager.h"
 #include <vector>

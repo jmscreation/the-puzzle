@@ -11,7 +11,7 @@
 class Controller {
     Clock generate_timer;
 
-    int generate_interval; // seconds to generate new car
+    float generate_interval; // seconds to generate new car
 
     olc::PixelGameEngine& pge;
 
