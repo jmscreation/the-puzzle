@@ -39,6 +39,10 @@ set RESOURCE_OUTPUT_NAME=archive_data
 del %OUTPUT% 2>nul
 setlocal enabledelayedexpansion
 
+if not exist %RESOURCE_BUILD_DIR% (
+	echo Creating Resource Build Directory Structure...
+	mkdir %RESOURCE_BUILD_DIR%
+)
 
 if %LINK_ONLY% GTR 0 (
 	goto linker
@@ -67,11 +71,6 @@ if %ASYNC_BUILD% GTR 0 (
 	set WAIT=
 ) else (
 	set WAIT=/WAIT
-)
-
-if not exist %RESOURCE_BUILD_DIR% (
-	echo Creating Resource Build Directory Structure...
-	mkdir %RESOURCE_BUILD_DIR%
 )
 
 del /Q "src\*.o" >nul 2>nul
