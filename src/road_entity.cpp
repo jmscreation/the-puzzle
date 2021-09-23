@@ -11,11 +11,7 @@ Road::Road(int cellx, int celly, char dir, int type): Entity(EntityTypes.road_pn
     width = frameLocation.size.x * scale.x;
     height = frameLocation.size.y * scale.y;
 
-    position.x = width - origin.x*scale.x + cellx * width;
-    position.y = height - origin.y*scale.y + celly * height;
-    rotation = PI/2.f * std::clamp(int(dir), 0, 3);
-
-    setFrame(type);
+    updatePlacement(cellx, celly, dir, type);
 
 };
 
@@ -27,4 +23,11 @@ bool Road::update(float delta) {
 
 
     return true;
+}
+
+void Road::updatePlacement(int cellx, int celly, char dir, int type) {
+    position.x = width - origin.x*scale.x + cellx * width;
+    position.y = height - origin.y*scale.y + celly * height;
+    rotation = PI/2.f * std::clamp(int(dir), 0, 3);
+    setFrame(type);
 }

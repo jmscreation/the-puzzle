@@ -3,6 +3,7 @@
 #include "external_defines.h"
 #include "olcPixelGameEngine.h"
 #include "anisprite.h"
+#include "clock.h"
 
 #include <vector>
 #include <list>
@@ -13,6 +14,7 @@ public:
 private:
     static std::vector<olc::AnimationAsset> animations; // all game entity animation assets stored here
     float depth;
+    bool destroy;
 
 protected:
     virtual ~Entity(); // do not manually delete entity - must return false from update loop
@@ -22,6 +24,7 @@ public:
 
     void setDepth(float depth);
     inline float getDepth() { return depth; }
+    inline void destroyMe() { destroy = true; }
 
 
     virtual bool update(float delta); // main update loop for each entity - return false to destroy entity

@@ -15,8 +15,12 @@ class Controller {
     float generate_interval; // seconds to generate new car
 
     olc::PixelGameEngine& pge;
+    
 
     DebugPoint mousePoint;
+    Road* place;
+    int placeType;
+    char placeDir;
 
 public:
     Controller(olc::PixelGameEngine& pge);

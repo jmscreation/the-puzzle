@@ -40,7 +40,10 @@ bool Window::OnUserUpdate(float delta) {
 
 bool Window::OnUserDestroy() {
 
-    Entity::UnloadResources();
+    delete controller;
+    controller = nullptr;
+    
+    Entity::UnloadResources(); // cleanup everything
 
     return true;
 }
