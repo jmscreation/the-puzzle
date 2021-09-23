@@ -13,7 +13,7 @@ set BIN2CPP=bin2cpp
 set OUTPUT=program.exe
 set DEBUGMODE=1
 
-set REBUILD_RESOURCES=0
+set REBUILD_RESOURCES=1
 set REBUILD_LIBRARIES=0
 set REBUILD_COMPLETED=0
 set LINK_ONLY=0
@@ -69,9 +69,9 @@ if %ASYNC_BUILD% GTR 0 (
 	set WAIT=/WAIT
 )
 
-if not exist .objs64 (
-	echo Creating Object Directory Structure...
-	mkdir .objs64
+if not exist %RESOURCE_BUILD_DIR% (
+	echo Creating Resource Build Directory Structure...
+	mkdir %RESOURCE_BUILD_DIR%
 )
 
 del /Q "src\*.o" >nul 2>nul
