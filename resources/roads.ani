@@ -1,0 +1,16 @@
+{
+	"image":"roads.png",
+	"width":286,
+	"height":286,
+	"count":9,
+	"offset":{
+		"x":26,
+		"y":26
+	},
+	"spread":{
+		"x":145,
+		"y":145
+	},
+	"rowsize":3,
+	"sequences":{}
+}

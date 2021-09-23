@@ -14,7 +14,7 @@ Car::Car(float x, float y): Entity(EntityTypes.car_png_strip),
     position.x = x;
     position.y = y;
     origin = frameLocation.size / 2.f;
-    setFrameRegion("all_cars", rand());
+    setFrame(rand());
     scale *= 1.5f;
     
     // Collision Boundary Test

@@ -11,6 +11,7 @@ bool Window::OnUserCreate() {
 
     success &= Entity::LoadNewEntityAnimation("test.ani", EntityTypes.test_animation);
     success = success && Entity::LoadNewEntityAnimation("cars.ani", EntityTypes.car_png_strip);
+    success = success && Entity::LoadNewEntityAnimation("roads.ani", EntityTypes.road_png_strip);
 
     if(!success){
         std::cout << "failed to load resources\n";

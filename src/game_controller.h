@@ -4,6 +4,7 @@
 #include "clock.h"
 #include "entity.h"
 #include "car_entity.h"
+#include "road_entity.h"
 #include "debug_point.h"
 
 #include <vector>

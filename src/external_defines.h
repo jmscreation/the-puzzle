@@ -8,7 +8,8 @@
 
 struct EntityAnimation {
     size_t test_animation,
-           car_png_strip;
+           car_png_strip,
+           road_png_strip;
 };
 
 extern EntityAnimation EntityTypes;

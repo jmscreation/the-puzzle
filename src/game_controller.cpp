@@ -4,6 +4,14 @@ Controller::Controller(olc::PixelGameEngine& pge): pge(pge), mousePoint(0,0) {
     generate_interval = 1;
 
     mousePoint.color = olc::GREEN;
+
+    new Road(0, 0, 1, 0);
+    new Road(0, 1, 0, 1);
+    new Road(0, 2, 0, 2);
+
+    new Road(1, 0, 0, 3);
+    new Road(1, 1, 0, 4);
+    new Road(1, 2, 0, 5);
 }
 
 Controller::~Controller() {
@@ -36,6 +44,12 @@ void Controller::update(float delta) {
         srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
         generate_interval = float(3 + rand() % 20) / 10.f;
         generate_timer.restart();
+    }
+
+    if(pge.GetMouse(olc::Mouse::LEFT).bPressed){
+        auto mpos = pge.GetMousePos();
+
+        new Road(floor(mpos.x / Road::width), floor(mpos.y / Road::height), 0, 0);
     }
 
 }
