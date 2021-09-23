@@ -1,6 +1,6 @@
 #include "game.h"
 
-Window::Window(): manager(globalAssetManager), controller(nullptr)  {
+Window::Window(): manager(*globalAssetManager), controller(nullptr)  {
     sAppName = "Simple Puzzle Game";
 }
 

@@ -15,4 +15,4 @@ struct EntityAnimation {
 extern EntityAnimation EntityTypes;
 
 extern std::vector<std::string> programArguments;
-extern olc::ArchiveAssetManager globalAssetManager; // global asset manager for loading resources
+extern olc::ArchiveAssetManager* globalAssetManager; // global asset manager for loading resources

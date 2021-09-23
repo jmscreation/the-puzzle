@@ -18,55 +18,6 @@ void Entity::draw(float delta) {
     Draw();
 }
 
-
-
-/*
-    Static Methods
-*/
-
-bool Entity::LoadNewEntityAnimation(const std::string& animationName, size_t& assetID) {
-    olc::AnimationAsset frame = globalAssetManager.GetAnimation(animationName);
-    if(frame == nullptr) return false;
-
-    assetID = animations.size();
-    animations.push_back(frame);
-
-    return true;
-}
-
-void Entity::UnloadResources() {
-    for(Entity* e : entities) delete e;
-    entities.clear();
-    animations.clear();
-}
-
-void Entity::EntityUpdate(float delta) {
-    static Clock dbgTimer;
-    bool dbg = false;
-    if(dbgTimer.getSeconds() > 1){
-        dbg = true;
-        dbgTimer.restart();
-    }
-    if(!entities.empty()){
-        if(dbg) std::cout << "debug: [";
-        for(auto i=entities.rbegin(); i != entities.rend(); ++i){
-            Entity* e = *i;
-            if(!e->update(delta) || e->destroy){ // check if entity will live
-                delete e;
-                entities.erase(std::next(i).base());
-                --i;
-            }
-        }
-        for(auto i=entities.rbegin(); i != entities.rend(); ++i){
-            Entity* e = *i;
-            e->draw(delta);
-            if(dbg) std::cout << e->getDepth() << ",";
-        }
-
-        if(dbg) std::cout << "]\n";
-    }
-}
-
 void Entity::setDepth(float depth) {
     assert(depth >= 0.f); // cannot set a depth lower than 0
 
@@ -89,4 +40,54 @@ void Entity::setDepth(float depth) {
         break;
     }
     entities.splice(i, entities, me); // move right in front of the member
+}
+
+
+/*
+    Static Methods
+*/
+
+bool Entity::LoadNewEntityAnimation(const std::string& animationName, size_t& assetID) {
+    olc::AnimationAsset frame = globalAssetManager->GetAnimation(animationName);
+    if(frame == nullptr) return false;
+
+    assetID = animations.size();
+    animations.push_back(frame);
+
+    return true;
+}
+
+void Entity::UnloadResources() {
+    for(Entity* e : entities) delete e;
+    entities.clear();
+    animations.clear();
+}
+
+void Entity::EntityUpdate(float delta) {
+    /*
+    static Clock dbgTimer;
+    bool dbg = false;
+    if(dbgTimer.getSeconds() > 1){
+        dbg = true;
+        dbgTimer.restart();
+    }
+    */
+    if(!entities.empty()){
+        //if(dbg) std::cout << "debug: [";
+        for(auto i=entities.rbegin(); i != entities.rend(); ++i){
+            Entity* e = *i;
+            if(e->destroy || !e->update(delta)){ // check if entity will live
+                delete e;
+                entities.erase(std::next(i).base());
+                --i;
+            }
+        }
+        for(auto i=entities.rbegin(); i != entities.rend(); ++i){
+            Entity* e = *i;
+            e->draw(delta);
+            //if(dbg) std::cout << e->getDepth() << ",";
+        }
+
+        //if(dbg) std::cout << "]\n";
+    }
 }

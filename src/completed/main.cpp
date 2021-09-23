@@ -2,26 +2,33 @@
 
 namespace fs = std::filesystem;
 
-olc::ArchiveAssetManager globalAssetManager;
+olc::ArchiveAssetManager* globalAssetManager = nullptr;
 std::vector<std::string> programArguments;
 EntityAnimation EntityTypes;
 
 
 bool initAssetManager() {
-
     std::cout << "Init Asset Manager...\n";
+    assert(globalAssetManager == nullptr); // cannot load more than once
 
-    globalAssetManager.LoadArchive(puzzle_asset_archive, sizeof(puzzle_asset_archive));
+    globalAssetManager = new olc::ArchiveAssetManager(); // instantiate new asset manager
+
+    globalAssetManager->LoadArchive(puzzle_asset_archive, sizeof(puzzle_asset_archive));
 
     std::cout << "Check Resources...\n";
-    auto list = globalAssetManager.GetResourceList();
+    auto list = globalAssetManager->GetResourceList();
 
     for(auto& r : list){
         std::cout << "Resource: " << r.name << "\n"
-                  << "  Type: " << globalAssetManager.GetAssetType(r.type) << "\n";
+                  << "  Type: " << globalAssetManager->GetAssetType(r.type) << "\n";
     }
 
     return true;
+}
+
+void freeAssetManager() {
+    delete globalAssetManager;
+    globalAssetManager = nullptr;
 }
 
 bool launchGame() {
@@ -56,6 +63,11 @@ int main(int argc, char** argv){
         std::cout << "something went wrong when launching game\n";
         return 1;
     }
+
+
+    freeAssetManager();
+
+    std::cout << "program terminated\n";
 
     return 0;
 }

@@ -49,10 +49,10 @@ void Controller::update(float delta) {
     if(pge.GetMouseWheel() != 0){
         if(pge.GetKey(olc::CTRL).bHeld){
             placeType = (placeType + (std::signbit(wheel) ? 1 : -1));
-            placeType = (placeType < 0 ? 9 : placeType) % 9;
+            placeType = (placeType < 0 ? 8 : placeType) % 9;
         } else {
             placeDir = (placeDir + (std::signbit(wheel) ? 1 : -1));
-            placeDir = (placeDir < 0 ? 4 : placeDir) % 4;
+            placeDir = (placeDir < 0 ? 3 : placeDir) % 4;
         }
     }
 
