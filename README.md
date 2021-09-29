@@ -25,7 +25,7 @@ You should avoid any *pre-release* version, and don't download the UCRT version.
 
 Libraries included in this project were compiled for 64bit; make sure your compiler is the 64bit version, and not the 32bit version.
 
-This project requires the C++20 ISO standard to be avaialable. Make sure your compiler is C++20 compatible.
+This project requires the C++20 ISO standard to be available. Make sure your compiler is C++20 compatible.
 
 If you are still having trouble with your compiler, here's a direct download for a working compiler: [MingW64-9.0.0 gcc-11.2.0 r1](https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-12.0.1-9.0.0-r1/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64-9.0.0-r1.7z)
 
