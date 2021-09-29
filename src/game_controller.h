@@ -6,6 +6,7 @@
 #include "car_entity.h"
 #include "road_entity.h"
 #include "debug_point.h"
+#include "map.h"
 
 #include <vector>
 
@@ -15,7 +16,8 @@ class Controller {
     float generate_interval; // seconds to generate new car
 
     olc::PixelGameEngine& pge;
-    
+
+    Map gameMap;
 
     DebugPoint mousePoint;
     Road* place;

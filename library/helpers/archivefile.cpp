@@ -1,7 +1,6 @@
 #include "archivefile.h"
 
-ArchiveFile::ArchiveFile(): fileVersion(100) {
-    empty.size = empty.offset = 0;
+ArchiveFile::ArchiveFile(): fileVersion(100), fileDataRegion(0), header({}), empty({}) {
     ClearArchive();
 }
 

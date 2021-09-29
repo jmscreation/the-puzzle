@@ -40,7 +40,7 @@ public:
         std::string archiveName;
         std::string archiveSignature;
         size_t fileCount;
-    } header;
+    };
 
     struct FileHeader {
         std::string name;
@@ -50,7 +50,10 @@ public:
         size_t offset;
 
         const char* buffer; // not used in file - internal buffer use
-    } empty;
+    };
+    
+    ArchiveHeader header;
+    FileHeader empty;
     std::vector<FileHeader> table;
 
     struct Stream {

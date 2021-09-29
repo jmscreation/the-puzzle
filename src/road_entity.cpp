@@ -31,3 +31,12 @@ void Road::updatePlacement(int cellx, int celly, char dir, int type) {
     rotation = PI/2.f * std::clamp(int(dir), 0, 3);
     setFrame(type);
 }
+
+void Road::clearRoads() {
+    for(Entity* e : entities){
+        if(dynamic_cast<Road*>(e) == nullptr) continue;
+        
+        e->destroyMe();
+    }
+    Entity::EntityUpdate(0.0f); // force update for immediate clean
+}

@@ -3,7 +3,6 @@
 Car::Car(float x, float y): Entity(EntityTypes.car_png_strip),
     direction(0), to_direction(0), speed(0), to_speed(0), turn_speed(8),
     accelleration(20.f), decelleration(80.f), max_speed(96.f),
-    destX(0), destY(0), inHurry(false),
     testPointA(0,0, 16,16, olc::BLUE),
     testPointB(0,0, 16,16, olc::GREEN),
     testPointC(0,0, 16,16, olc::YELLOW),
@@ -15,24 +14,10 @@ Car::Car(float x, float y): Entity(EntityTypes.car_png_strip),
     position.y = y;
     origin = frameLocation.size / 2.f;
     setFrame(rand());
-    scale *= 1.5f;
-    
-    // Collision Boundary Test
-    spr = new olc::Sprite(frameLocation.size.x, frameLocation.size.y);
-    pge->SetDrawTarget(spr);
-    pge->Clear(olc::BLANK);
-    pge->DrawRect(0,0,int(frameLocation.size.x - 1), int(frameLocation.size.y - 1));
-    pge->SetDrawTarget(nullptr);
-    collisionBoundary = new olc::Decal(spr);
-
-
-    slowdown = -1.f;
 }
 
 
 Car::~Car() {
-    delete collisionBoundary;
-    delete spr;
 }
 
 bool Car::update(float delta) {
@@ -67,78 +52,12 @@ bool Car::update(float delta) {
         position += vec * delta * speed;
     }
 
-    if(forwardTimer.getSeconds() > 1){
-        to_direction = atan2(position.y - destY, destX - position.x) * 180.f / PI;
-        forwardTimer.restart();
-    }
-
-    if(turnTimer.getSeconds() > 4) {
-        to_direction = 75 + rand() % 30;
-        to_speed += float(rand()%120 - 60) / 10.f;
-
-        turnTimer.restart();
-    }
-
     olc::vi2d mpos = pge->GetMousePos();
 
     if(position.y < -100 || position.x < -100
        || position.x > pge->ScreenWidth() + 100 || position.y > pge->ScreenHeight() + 100
        || (pge->GetMouse(olc::Mouse::RIGHT).bPressed && checkCollision(mpos.x, mpos.y))){
         return false; // destroy if outside or right clicked on
-    }
-    
-    {
-        float dist;
-        int side=0;
-        Car* other;
-        if((other = lookAhead(dist, side, 64, 6.f)) != nullptr){
-            float dir = atan2(position.y - other->position.y, other->position.x - position.x) * 180.f / PI,
-                  raw_angle_toward_diff = fabs(dir - direction),
-                  angle_toward_dist = raw_angle_toward_diff > 180.f ? 360.f - raw_angle_toward_diff : raw_angle_toward_diff,
-                  sign = fmod(dir - direction + 360.f, 360.f) < 180.f ? -1.f : 1.f, // move away
-                  odir = other->direction,
-                  raw_ang_diff = fabs(odir - direction),
-                  angle_dist = raw_ang_diff > 180.f ? 360.f - raw_ang_diff : raw_ang_diff;
-            
-            if(slowdown < 0){
-                slowdown = to_speed;
-            }
-
-            if(dist > 12 && (inHurry || speed > 30)){
-                to_direction = direction + sign * angle_toward_dist / 2.f;
-            }
-
-            if(stuckTimeout.getSeconds() > 20){
-                return false; // destroy if stuck
-            } else {
-                if(side == 2 && angle_dist > 55){ // take right of way
-                    to_speed += delta * 16.f;
-                    to_direction += delta * sign * angle_toward_dist / 8.f;
-                } else if(side == 1 && angle_dist > 55){ // yield on left
-                    to_speed = 0.f;
-                } else {
-                    if(angle_dist > 3.f || dist < 32.f){
-                        to_speed = (angle_dist < 30.f) ?
-                                    (dist > 20.f ? other->speed / fmax((angle_dist / dist), 1.001f) : other->speed / 4.f) :
-                                    (dist > 20.f ? (angle_dist < 50 ? dist / 4.f : 0.f) : 0.f);
-                        if(speed > dist && !side) to_speed /= 2.f;
-                    }
-                }
-            }
-            if(stuckTimeout.getSeconds() > 2 && inHurry && side != 0){
-                to_speed += delta * 16.f;
-            }
-        } else {
-            stuckTimeout.restart();
-            if(slowdown >= 0){
-                to_speed = slowdown;
-                slowdown = -1.f;
-            }
-        }
-    }
-
-    if(speed > 0.01f){
-        stuckTimeout.restart();
     }
 
     return true;
@@ -149,8 +68,6 @@ void Car::draw(float delta) {
     Entity::draw(delta); // inherited event
     
     olc::vi2d mpos = pge->GetMousePos();
-    
-    //pge->DrawRotatedDecal(position, collisionBoundary, rotation, origin, scale, checkCollision(mpos.x, mpos.y) ? olc::RED : olc::WHITE);
     
     /*
     testPointA.draw();
@@ -201,59 +118,11 @@ Car* Car::checkAllCollision(float x, float y, Car* me) {
     return nullptr;
 }
 
-Car* Car::lookAhead(float& foundDistance, int& side, float distance, float step) {
-    float dir = (direction) / 180.f * PI,
-          vx = cos(dir), vy = -sin(dir), // dir unit vector
-          mag_h = (frameLocation.size.y - origin.y) * scale.y,
-          mag_v = (frameLocation.size.x - origin.x) * scale.x,
-          px = position.x + vx * mag_h, py = position.y + vy * mag_h, // front coord
+void Car::clearCars() {
+    for(Entity* e : entities){
+        if(dynamic_cast<Car*>(e) == nullptr) continue;
 
-          _vx = vy, _vy = -vx, // perpendicular vector to corners
-          pxTop = px + _vx * mag_v, pyTop = py + _vy * mag_v, // front top corner coord
-          pxBtm = px + _vx * -mag_v, pyBtm = py + _vy * -mag_v, // front bottom corner coord
-          updir = (direction + 45) / 180.f * PI, // diagonal up
-          dwndir = (direction - 45) / 180.f * PI, // diagonal down
-
-          tdir = (to_direction) / 180.f * PI,
-          tvx = cos(tdir), tvy = -sin(tdir), // to dir unit vector
-          duvx = cos(updir), duvy = -sin(updir), // diagonal up unit vector
-          ddvx = cos(dwndir), ddvy = -sin(dwndir); // diagonal down unit vector
-
-    step = std::clamp(step, 0.5f, 1024.f);
-
-    testPointA.x = px;
-    testPointA.y = py;
-
-    testPointB.x = px + tvx * distance;
-    testPointB.y = py + tvy * distance;
-
-    testPointC.x = px + vx * distance;
-    testPointC.y = py + vy * distance;
-
-    testPointD.x = pxTop;
-    testPointD.y = pyTop;
-
-    testPointE.x = pxBtm;
-    testPointE.y = pyBtm;
-
-    for(float d=1.f; d <= distance; d += step){
-        Car *c, *cleft = nullptr, *cright = nullptr, *ctoward = nullptr;
-        if(
-           (c = Car::checkAllCollision(px + vx * d, py + vy * d, this)) != nullptr ||
-           //(c = Car::checkAllCollision(pxTop + vx * d, pyTop + vy * d, this)) != nullptr ||
-           //(c = Car::checkAllCollision(pxBtm + vx * d, pyBtm + vy * d, this)) != nullptr ||
-           (c = cleft = Car::checkAllCollision(pxTop + duvx * d/2.f, pyTop + duvy * d/2.f, this)) != nullptr ||
-           (c = cright = Car::checkAllCollision(pxBtm + ddvx * d/2.f, pyBtm + ddvy * d/2.f, this)) != nullptr ||
-           (c = ctoward = Car::checkAllCollision(px + tvx * d, py + tvy * d, this)) != nullptr
-        ){
-            foundDistance = d;
-            side = 0;
-            if(cleft != nullptr) side = 1;
-            if(cright != nullptr) side = 2;
-            if(ctoward != nullptr) side = 3;
-
-            return c;
-        }
+        e->destroyMe();
     }
-    return nullptr;
+    Entity::EntityUpdate(0.0f); // force update for immediate clean
 }

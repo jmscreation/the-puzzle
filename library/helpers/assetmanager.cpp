@@ -108,7 +108,7 @@ namespace olc {
             json::loadProperty("count", animation->count);          // total images
             json::loadProperty("rowsize", animation->rowsize);      // total images per row
             
-            animation->region.insert_or_assign("default", (Sequence) {0, animation->count}); // generate a default animation sequence
+            animation->region.insert_or_assign("default", Sequence ({0, animation->count})); // generate a default animation sequence
 
             if(sequences.IsObject()){
                 for(rapidjson::Value::ConstMemberIterator it = sequences.MemberBegin(); it != sequences.MemberEnd(); ++it){

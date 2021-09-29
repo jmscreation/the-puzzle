@@ -19,4 +19,6 @@ public:
 
     // void draw(float delta) override;
 
+    static void clearRoads();
+
 };
