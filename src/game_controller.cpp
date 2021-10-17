@@ -1,6 +1,11 @@
 #include "game_controller.h"
 
+Controller* Controller::curInstance = nullptr;
+
 Controller::Controller(olc::PixelGameEngine& pge): pge(pge), mousePoint(0,0) {
+    assert(curInstance == nullptr); // more than one controller not allowed
+
+    curInstance = this;
     generate_interval = 1;
 
     mousePoint.color = olc::GREEN;
@@ -14,6 +19,7 @@ Controller::Controller(olc::PixelGameEngine& pge): pge(pge), mousePoint(0,0) {
 
 Controller::~Controller() {
     place->destroyMe();
+    curInstance = nullptr;
 }
 
 void Controller::update(float delta) {
@@ -87,6 +93,10 @@ void Controller::update(float delta) {
         mousePoint.x = mpos.x;
         mousePoint.y = mpos.y;
         place->updatePlacement(-1, -1, 0, 0);
+    }
+
+    if(pge.GetKey(olc::BACK).bPressed){
+        new GameCar(mpos.x, mpos.y);
     }
 
 }
