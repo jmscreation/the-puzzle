@@ -11,5 +11,5 @@ GameCar::~GameCar() {
 bool GameCar::update(float delta) {
     Car::update(delta); // inherit
 
-    
+    return true;    
 }

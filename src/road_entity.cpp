@@ -36,7 +36,8 @@ void Road::clearRoads() {
     for(Entity* e : entities){
         if(dynamic_cast<Road*>(e) == nullptr) continue;
         
-        e->destroyMe();
+        if(e->blend.a > 250) // a bit of a hack to prevent placement roads from being killed
+            e->destroyMe();
     }
     Entity::EntityUpdate(0.0f); // force update for immediate clean
 }

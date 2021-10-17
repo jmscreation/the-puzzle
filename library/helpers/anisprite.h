@@ -18,19 +18,19 @@ namespace olc {
 
         void translateFrame();
         void setRawFrame(uint32_t frame);
-        inline uint32_t getRawFrame() { return curFrame; }
+        inline uint32_t getRawFrame() const { return curFrame; }
 
     public:
 
         Frame frameLocation;
 
         void setFrame(uint32_t frame);
-        inline uint32_t getFrame() { return curRegionFrame; }
+        inline uint32_t getFrame() const { return curRegionFrame; }
 
         void setFrameRegion(uint32_t freg, uint32_t relativeFrame=0);
         void setFrameRegion(const std::string& freg, uint32_t relativeFrame=0);
-        inline std::string getFrameRegion() { return curRegion; }
-        inline uint32_t getFrameRegionCount() { return frameLocation.region.size(); }
+        inline std::string getFrameRegion() const { return curRegion; }
+        inline uint32_t getFrameRegionCount() const { return frameLocation.region.size(); }
 
         Animation(const Frame& animationData);
         virtual ~Animation();

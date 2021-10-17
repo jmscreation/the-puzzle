@@ -7,6 +7,7 @@
 #include "road_entity.h"
 #include "debug_point.h"
 #include "map.h"
+#include "freedialog.h"
 
 #include <vector>
 

@@ -1,6 +1,7 @@
 #ifndef __FREE_DIALOG_H__
 #define __FREE_DIALOG_H__
 
+#include "dialog.h"
 #include "windows.h"
 #include "commctrl.h"
 #include <string>
