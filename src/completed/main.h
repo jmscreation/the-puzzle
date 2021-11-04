@@ -7,7 +7,6 @@
 #include "external_defines.h"
 
 #include "game.h"
-#include "dialog.h"
 #include "freedialog.h"
 
 

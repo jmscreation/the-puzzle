@@ -2,7 +2,7 @@
 
 Controller* Controller::curInstance = nullptr;
 
-Controller::Controller(olc::PixelGameEngine& pge): pge(pge), mousePoint(0,0) {
+Controller::Controller(olc::PixelGameEngine& pge): pge(pge), mousePoint(0,0), place(nullptr) {
     assert(curInstance == nullptr); // more than one controller not allowed
 
     curInstance = this;

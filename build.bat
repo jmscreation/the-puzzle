@@ -24,7 +24,7 @@ set ASYNC_BUILD=1
 
 REM -DNO_RELEASE
 set COMPILER_FLAGS=-std=c++20
-set ADDITIONAL_LIBRARIES=-static-libstdc++ -lpthread -lportaudio -lsetupapi -lwinmm -lcomdlg32 -luser32 -lgdi32 -lopengl32 -lShlwapi -ldwmapi -lstdc++fs -lpng -lz -lfreetype
+set ADDITIONAL_LIBRARIES=-static-libstdc++ -lpthread -lfreedialog -lportaudio -lsetupapi -lwinmm -lcomdlg32 -luser32 -lgdi32 -lopengl32 -lShlwapi -ldwmapi -lstdc++fs -lpng -lz -lfreetype
 set ADDITIONAL_LIBDIRS=-Llibrary
 set ADDITIONAL_INCLUDEDIRS=-Ilibrary -Ilibrary\helpers -Isrc -Isrc\completed -Iresources -Iresources\build
 

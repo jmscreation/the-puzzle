@@ -1,7 +1,6 @@
 #ifndef __FREE_DIALOG_H__
 #define __FREE_DIALOG_H__
 
-#include "dialog.h"
 #include "windows.h"
 #include "commctrl.h"
 #include <string>
@@ -68,6 +67,110 @@ namespace freedialog {
     std::string getBasicInput(const std::string& title, const std::string& caption = "", const std::string& def = "");
     std::string getBasicPassword(const std::string& title, const std::string& caption = "", const std::string& def = "", char passChar = '*');
 
+
+
+
+    enum MSGTYPE : UINT {
+        // ICON
+
+        Information         = MB_ICONINFORMATION,
+        Question            = MB_ICONQUESTION,
+        Exclamation         = MB_ICONEXCLAMATION,
+        Asterisk            = MB_ICONASTERISK,
+        Warning             = MB_ICONWARNING,
+        Stop                = MB_ICONSTOP,
+        Error               = MB_ICONERROR,
+        Mask                = MB_ICONMASK,
+        Hand                = MB_ICONHAND,
+    
+        // INPUT
+
+        YesNoCancel         = MB_YESNOCANCEL,
+        YesNo               = MB_YESNO,
+        OkCancel            = MB_OKCANCEL,
+        OkHelp              = MB_HELP, // does not close dialog box - this sends WM_HELP event to the parent window - see docu https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messagebox
+        OnlyOk              = MB_OK,
+        AbortRetryIgnore    = MB_ABORTRETRYIGNORE,
+        RetryCancel         = MB_RETRYCANCEL,
+        CancelTryContinue   = MB_CANCELTRYCONTINUE,
+
+        //RESULT
+
+        Ok                  = IDOK,
+        Yes                 = IDYES,
+        No                  = IDNO,
+        Cancel              = IDCANCEL,
+        Help                = IDHELP, // see MB_HELP comment above
+        Close               = IDCLOSE,
+        Abort               = IDABORT,
+        Retry               = IDRETRY,
+        Ignore              = IDIGNORE,
+        Continue            = IDCONTINUE,
+        TryAgain            = IDTRYAGAIN
+    };
+
+    std::string EnvironmentVariable(const std::string &variable);
+
+    class FileDialog {
+    public:
+        struct Filter {
+            const char* label;
+            const char* filter;
+        };
+
+        FileDialog(std::string &filePath, const std::string &path, const std::vector<Filter> &flt, int defaultFilter, DWORD flags, const std::string &title);
+        virtual ~FileDialog();
+
+    protected:
+        void store(bool success);
+        OPENFILENAME fileCtx;
+
+    private:
+        std::string& filePathRef;
+        std::string strFilter;
+        char szFile[MAX_PATH];
+    };
+
+    class SaveDialog: public FileDialog {
+    public:
+        SaveDialog(std::string &filePath,
+                    const std::string &path="",
+                    const std::vector<FileDialog::Filter> &flt = {{"All Files (*.*)","*.*"}},
+                    int defaultFilter=0,
+                    DWORD flags=OFN_OVERWRITEPROMPT,
+                    const std::string &title="Save File");
+        virtual ~SaveDialog();
+    };
+
+    class LoadDialog: public FileDialog {
+    public:
+        LoadDialog(std::string &filePath,
+                    const std::string &path="",
+                    const std::vector<FileDialog::Filter> &flt = {{"All Files (*.*)","*.*"}},
+                    int defaultFilter=0,
+                    DWORD flags=OFN_FILEMUSTEXIST,
+                    const std::string &title="Open File");
+        virtual ~LoadDialog();
+    };
+
+    class MessageDialog {
+    public:
+        MessageDialog(const std::string &message, const std::string &title="", UINT msgType=OnlyOk);
+        virtual ~MessageDialog();
+        virtual int result(){ return _result; }
+    protected:
+        int _result;
+    };
+
+
+    class QuestionDialog: public MessageDialog {
+    public:
+        QuestionDialog(const std::string &message="",
+                        const std::string &title="",
+                        UINT msgType=YesNo|Question);
+        virtual ~QuestionDialog();
+        int result();
+    };
 }
 
 #endif // __FREE_DIALOG_H__
